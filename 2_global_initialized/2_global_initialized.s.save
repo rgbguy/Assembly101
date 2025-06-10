@@ -1,0 +1,16 @@
+.section	.rodata
+	msg_main_print1:
+	.string	"%p\n"
+
+	msg_main_print2:
+	.string "%d\n"
+
+.section .data
+	.globl	g_iNo
+	.type	g_iNo,	@object
+	.size	g_iNo,	4
+	.align	4
+	g_iNo:
+		.int	10
+
+.section .text
