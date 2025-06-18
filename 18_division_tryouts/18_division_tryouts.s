@@ -61,7 +61,7 @@ main:
     movl    -12(%ebp),  %ecx
 
     #xorl    %edx,   %edx
-    divl    %ecx
+    idivl   %ecx
 
     movl    %eax,   -16(%ebp)
     movl    %edx,   -20(%ebp)
