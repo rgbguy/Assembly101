@@ -25,21 +25,21 @@ iNo2:
 .globl  fun1
 .type   fun1, @function
 fun1:
-    push    %ebp
+    pushl    %ebp
     movl    %esp,   %ebp
 
-    push    $msg_fun1_print1
+    pushl    $msg_fun1_print1
     call    printf
     addl    $4, %esp
 
-    push    $iNo1
-    push    $msg_fun1_scan
+    pushl    $iNo1
+    pushl    $msg_fun1_scan
     call    scanf
     addl    $8, %esp
 
-    push    iNo2
-    push    iNo1     
-    push    $msg_fun1_print2
+    pushl    iNo2
+    pushl    iNo1     
+    pushl    $msg_fun1_print2
     call    printf
     addl    $12, %esp
 
@@ -51,11 +51,12 @@ fun1:
 
 .type   fun2, @function
 fun2:
-    push    %ebp
+    pushl    %ebp
     movl    %esp,   %ebp
 
-    push    $msg_fun2_print
+    pushl    $msg_fun2_print
     call    printf
+    addl    $4, %esp	
 
     movl    %ebp,   %esp
     pop     %ebp

@@ -23,32 +23,33 @@ iNo1:
 .globl main
 .type   main,   @function
 main:
-    push    %ebp
+    pushl    %ebp
     movl    %esp,   %ebp
 
     subl    $4, %esp
-    leal    -4(%ebp),   %eax
-    push    %eax
 
     push    $msg_one_print1
     call    printf
     addl    $4, %esp
 
-    push    $iNo2
-    push    $msg_one_scan
+    leal    -4(%ebp),   %eax
+    pushl    %eax
+    pushl    $iNo2
+    pushl    $msg_one_scan
     call    scanf
-
     addl    $12,    %esp 
 
-    push    -4(%ebp)
-    push    iNo2
-    push    iNo1
-    push    $msg_one_print2
+    pushl    -4(%ebp)
+    pushl    iNo2
+    pushl    iNo1
+    pushl    $msg_one_print2
     call    printf
+    addl    $16,    %esp
+   
     call    fun1
-
+    
     movl    %ebp,   %esp
     pop     %ebp
     
-    push    $0
+    pushl    $0
     call    exit
