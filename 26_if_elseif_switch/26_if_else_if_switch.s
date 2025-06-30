@@ -49,53 +49,47 @@ main:
 	movl	$1,		%eax
 	movl	-4(%ebp),	%edx
 	cmpl	%eax,	%edx
-	je	label_is1
-
-	movl	$2,		%eax
-	movl	-4(%ebp),	%edx
-	cmpl	%eax,	%edx
-	je	label_is2
-
-	movl	$3,		%eax
-	movl	-4(%ebp),	%edx
-	cmpl	%eax,	%edx
-	je	label_is3
-	
-	movl	$4,		%eax
-	movl	-4(%ebp),	%edx
-	cmpl	%eax,	%edx
-	je	label_is4
-	
-	jmp	label_isInvalid
-		
-label_is1:
+	jne		label_isNOT1
 	pushl	$msg_main_printf_add
 	call	printf
 	addl	$4,	%esp
 	jmp	label_out
-	
-label_is2:
+		
+label_isNOT1:
+	movl	$2,		%eax
+	movl	-4(%ebp),	%edx
+	cmpl	%eax,	%edx
+	jne		label_isNOT2
 	pushl	$msg_main_printf_sub
 	call	printf
 	addl	$4,	%esp
-	jmp	label_out
-	
-label_is3:
+	jmp		label_out
+
+label_isNOT2:
+	movl	$3,		%eax
+	movl	-4(%ebp),	%edx
+	cmpl	%eax,	%edx
+	jne		label_isNOT3
 	pushl	$msg_main_printf_mult
 	call	printf
 	addl	$4,	%esp
-	jmp	label_out
-	
-label_is4:
+	jmp		label_out
+
+label_isNOT3:
+	movl	$4,		%eax
+	movl	-4(%ebp),	%edx
+	cmpl	%eax,	%edx
+	jne		label_isNOT4
 	pushl	$msg_main_printf_div
 	call	printf
 	addl	$4,	%esp
-	jmp	label_out
-	
-label_isInvalid:
+	jmp		label_out
+
+label_isNOT4:
 	pushl	$msg_main_printf_invalid
 	call	printf
 	addl	$4,	%esp
+	jmp	label_out
 	
 label_out:
 	pushl	$0
