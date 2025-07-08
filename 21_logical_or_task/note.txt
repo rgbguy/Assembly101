@@ -1,0 +1,1 @@
+needs correction in OR logic. OR when left operand is 1, doesnt calculate right one.
