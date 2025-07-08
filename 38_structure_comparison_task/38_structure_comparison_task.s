@@ -1,39 +1,38 @@
 .section    .rodata
-    msg_main_print_enter_obj2val:
-    .string "Enter obj2 values,\n"
-
-    msg_main_print_enter_chChar:
-    .string "Enter chChar\t:"
-
-    msg_main_print_enter_iNo:
-    .string "Enter iNo\t:"
-
-    msg_main_print_enter_shiNo:
-    .string "Enter shiNo\t:"
-
-    msg_main_scan_chChar:
-    .string "%c"
-
-    msg_main_scan_iNo:
-    .string "%d"
-
-    msg_main_scan_shiNo:
-    .string "%hd"
+    msg_main_print_obj1is:
+    .string "Obj1 is\n"
 
     msg_main_print_obj2is:
     .string "Obj2 is\n"
 
     msg_main_print_obj3is:
-    .string "\nObj3 is\n"
+    .string "Obj3 is\n"
 
     msg_main_print_obj_values:
-    .string "chChar = %c, iNo = %d, shiNo = %hd\n"
+    .string "chChar = %c, iNo = %d, shiNo = %hd\n\n"
 
-    msg_main_print_obj1is:
-    .string "\nObj1 is\n"
+    msg_main_print_obj1_2comparison:
+    .string "obj1 & obj2 comparison is "
 
-.section    .bss
-.comm       obj1    12, 4
+    msg_main_print_obj2_3comparison:
+    .string "obj2 & obj3 comparison is "
+
+    msg_main_print_equal:
+    .string "equal\n\n"
+
+    msg_main_print_not_equal:
+    .string "not equal\n\n"
+
+.section    .data
+.globl      obj1
+.type       obj1,   @function
+.size       obj1, 12
+.align      4
+obj1:
+    .ascii  "A"
+    .zero   3
+    .int    10
+    .value  20
 
 .section    .text
 .globl      main
@@ -42,96 +41,128 @@ main:
     pushl   %ebp
     movl    %esp,   %ebp
 
-    subl    $24,    %esp
+    subl    $12,    %esp
+    movb    $'B',   -12(%ebp)
+    movl    $30,   -8(%ebp)
+    movw    $40,   -4(%ebp)
 
-    pushl   $msg_main_print_enter_obj2val
-    call    printf
-    addl    $4,     %esp
-
-    pushl   $msg_main_print_enter_chChar
-    call    printf
-    addl    $4,     %esp
-
-    leal    -12(%ebp),  %eax
-    pushl   %eax
-    pushl   $msg_main_scan_chChar
-    call    scanf
-    addl    $8,     %esp
-
-    pushl   $msg_main_print_enter_iNo
-    call    printf
-    addl    $4,     %esp
-
-    leal    -8(%ebp),  %eax
-    pushl   %eax
-    pushl   $msg_main_scan_iNo
-    call    scanf
-    addl    $8,     %esp
-
-    pushl   $msg_main_print_enter_shiNo
-    call    printf
-    addl    $4,     %esp
-
-    leal    -4(%ebp),  %eax
-    pushl   %eax
-    pushl   $msg_main_scan_shiNo
-    call    scanf
-    addl    $8,     %esp
-
-    pushl   $msg_main_print_obj2is
-    call    printf
-    addl    $4,     %esp
-
-    pushl   -4(%ebp)
-    pushl   -8(%ebp)
-    pushl   -12(%ebp)
-    pushl   $msg_main_print_obj_values
-    call    printf
-    addl    $16,    %esp
-
-    leal    obj1,   %ebx
-    movb    -12(%ebp),  %al
-    movb    %al,    (%ebx)
-    movl    -8(%ebp),  %eax
-    movl    %eax,    4(%ebx)
-    movl    -4(%ebp),  %eax
-    movl    %eax,    8(%ebx)
-
-    leal    -24(%ebp),   %ebx
-    movb    -12(%ebp),  %al
-    movb    %al,    (%ebx)
-    movl    -8(%ebp),  %eax
-    movl    %eax,    4(%ebx)
-    movl    -4(%ebp),  %eax
-    movl    %eax,    8(%ebx)
+    subl    $12,    %esp
+    movb    $'B',   -24(%ebp)
+    movl    $30,   -20(%ebp)
+    movw    $40,   -16(%ebp)
 
     pushl   $msg_main_print_obj1is
     call    printf
     addl    $4,     %esp
 
-    leal    obj1,   %eax
-    xorl    %edx,   %edx
-    movl    (%eax), %edx    
-    movl    4(%eax), %ecx    
-    movl    8(%eax), %ebx
-    pushl   %ebx
+    leal    obj1,       %ebx
+    xorl    %eax,       %eax
+    movb    (%ebx),     %al
+    movl    4(%ebx),    %edx
+    xorl    %ecx,       %ecx
+    movl    8(%ebx),    %ecx
     pushl   %ecx
     pushl   %edx
+    pushl   %eax
     pushl   $msg_main_print_obj_values
     call    printf
-    addl    $16,    %esp
+    addl    $16,        %esp
+
+    pushl   $msg_main_print_obj2is
+    call    printf
+    addl    $4,     %esp
+
+    xorl    %eax,       %eax
+    movb    -12(%ebp),  %al
+    movl    -8(%ebp),   %edx
+    xorl    %ecx,       %ecx
+    movl    -4(%ebp),   %ecx
+    pushl   %ecx
+    pushl   %edx
+    pushl   %eax
+    pushl   $msg_main_print_obj_values
+    call    printf
+    addl    $16,        %esp   
 
     pushl   $msg_main_print_obj3is
     call    printf
     addl    $4,     %esp
 
-    pushl   -16(%ebp)
-    pushl   -20(%ebp)
-    pushl   -24(%ebp)
+    xorl    %eax,       %eax
+    movb    -24(%ebp),  %al
+    movl    -20(%ebp),   %edx
+    xorl    %ecx,       %ecx
+    movl    -16(%ebp),   %ecx
+    pushl   %ecx
+    pushl   %edx
+    pushl   %eax
     pushl   $msg_main_print_obj_values
     call    printf
-    addl    $16,    %esp
+    addl    $16,        %esp   
 
+    pushl   $msg_main_print_obj1_2comparison
+    call    printf
+    addl    $4,     %esp
+
+    leal    obj1,   %ebx
+    xorl    %eax,   %eax
+    movb    (%ebx), %al
+    xorl    %edx,   %edx
+    movb    -12(%ebp),  %dl
+    cmpb    %al,    %dl
+    jne     label_not_equal_1
+    movl    4(%ebx), %eax
+    movl    -8(%ebp),  %edx
+    cmpl    %eax,    %edx
+    jne     label_not_equal_1
+    movw    8(%ebx), %ax
+    xorl    %edx,   %edx
+    movw    -4(%ebp),  %dx
+    cmpw    %ax,    %dx
+    jne     label_not_equal_1
+    pushl   $msg_main_print_equal
+    call    printf
+    addl    $4, %esp
+
+label_second_comparison:
+    pushl   $msg_main_print_obj2_3comparison
+    call    printf
+    addl    $4,     %esp
+
+    leal    -12(%ebp),   %ebx
+    xorl    %eax,   %eax
+    movb    (%ebx), %al
+    xorl    %edx,   %edx
+    movb    -24(%ebp),  %dl
+    cmpb    %al,    %dl
+    jne     label_not_equal_2
+    movl    4(%ebx), %eax
+    xorl    %edx,   %edx
+    movl    -20(%ebp),  %edx
+    cmpl    %eax,    %edx
+    jne     label_not_equal_2
+    movw    8(%ebx), %ax
+    xorl    %edx,   %edx
+    movw    -16(%ebp),  %dx
+    cmpw    %ax,    %dx
+    jne     label_not_equal_2
+    pushl   $msg_main_print_equal
+    call    printf
+    addl    $4, %esp
+    jmp     label_out
+
+label_not_equal_1:
+    pushl   $msg_main_print_not_equal
+    call    printf
+    addl    $4, %esp
+    jmp     label_second_comparison
+
+label_not_equal_2:
+    pushl   $msg_main_print_not_equal
+    call    printf
+    addl    $4, %esp
+
+label_out:
     pushl   $0
     call    exit
 
