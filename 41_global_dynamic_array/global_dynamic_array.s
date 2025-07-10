@@ -57,15 +57,7 @@ main:
     movl    $0,     %eax
     movl    pPtr,   %edx
     cmpl    %edx,   %eax
-    jne     label_memory_allocation_passed
-
-    pushl   $msg_main_memFailed
-    call    puts
-    addl    $4, %esp
-    
-    pushl   $-1
-    call    exit
-    addl    $4, %esp
+    je      label_mem_failed
 
 label_memory_allocation_passed:
     #for 1 starts
@@ -124,3 +116,12 @@ label_for2_condition:
 
     pushl   $0
     call    exit
+
+label_mem_failed:
+    pushl   $msg_main_memFailed
+    call    puts
+    addl    $4, %esp
+    
+    pushl   $-1
+    call    exit
+    
