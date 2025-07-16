@@ -7,9 +7,6 @@
     msg_main_scan:
     .string "%d"
 
-    msg_main_memFailed:
-    .string "Memory allocation FAILED"
-
     msg_main_print_Entervalue:
     .string "Enter %d value:\t"
 
@@ -19,14 +16,6 @@
     msg_main_print_value_is:
     .string "%d value is:\t%d\n"
 
-.section    .data
-.globl  pPtr
-.type   pPtr,  @object
-.size   pPtr,  4
-.align  4
-pPtr:
-    .int    0
-
 .section    .text
 .globl      main
 .type       main,   @function
@@ -35,6 +24,7 @@ main:
     movl    %esp,   %ebp
 
     subl    $8, %esp
+    subl    $(4*MAX),   %esp
 
     pushl   $msg_main_print_entervalueofn
     call    printf
@@ -46,33 +36,19 @@ main:
     call    scanf
     addl    $8,     %esp
 
-    movl    $4, %eax
-    movl    -4(%ebp),   %ecx
-    mull    %ecx                #result comes in edx:eax
-    pushl   %eax
-    call    malloc              #result will be stored in EAX (every function does it) #malloc returns adress of starting memory of allocation
-    movl    %eax,   pPtr
-    addl    $4, %esp
-
-    movl    $0,     %eax
-    movl    pPtr,   %edx
-    cmpl    %edx,   %eax
-    je      label_mem_failed
-
-label_memory_allocation_passed:
     #for 1 starts
     movl    $0, -8(%ebp)
     jmp     label_for1_condition
 
 label_for1_loop:
-    pushl   %edx                #iCounter already present in edx
+    pushl   %edx                        #iCounter already present in edx
     pushl   $msg_main_print_Entervalue
     call    printf
     addl    $8, %esp
 
     movl    -8(%ebp),   %eax            # i
-    movl    pPtr,       %ecx            # load malloc'd pointer
-    leal    (%ecx,%eax,4),  %edx        # edx = &pPtr[i]
+    movl    -12(%ebp),  %ecx
+    leal    (-8-MAX*4)(%ebp,%eax,4),  %edx 
     pushl   %edx
     pushl   $msg_main_scan
     call    scanf
@@ -96,9 +72,8 @@ label_for1_condition:
     jmp     label_for2_condition
 
 label_for2_loop:
-    movl    pPtr, %ecx                #Load the pointer returned by malloc
-    movl    -8(%ebp), %edx            #Load loop counter (i)
-    movl    (%ecx, %edx, 4), %eax     #Load pPtr[i] into eax
+    movl    -8(%ebp),           %edx            #Load loop counter (i)
+    movl    (-8-MAX*4)(%ebp, %edx, 4), %eax
     pushl   %eax
     pushl   %edx
     pushl   $msg_main_print_value_is
@@ -115,19 +90,5 @@ label_for2_condition:
     jl      label_for2_loop
     #for 2 ends
 
-    movl    pPtr, %eax
-    pushl   %eax
-    call    free
-    addl    $4, %esp
-
     pushl   $0
     call    exit
-
-label_mem_failed:
-    pushl   $msg_main_memFailed
-    call    puts
-    addl    $4, %esp
-    
-    pushl   $-1
-    call    exit
-    

@@ -19,14 +19,6 @@
     msg_main_print_value_is:
     .string "%d value is:\t%d\n"
 
-.section    .data
-.globl  pPtr
-.type   pPtr,  @object
-.size   pPtr,  4
-.align  4
-pPtr:
-    .int    0
-
 .section    .text
 .globl      main
 .type       main,   @function
@@ -34,7 +26,7 @@ main:
     pushl   %ebp
     movl    %esp,   %ebp
 
-    subl    $8, %esp
+    subl    $12, %esp
 
     pushl   $msg_main_print_entervalueofn
     call    printf
@@ -51,11 +43,11 @@ main:
     mull    %ecx                #result comes in edx:eax
     pushl   %eax
     call    malloc              #result will be stored in EAX (every function does it) #malloc returns adress of starting memory of allocation
-    movl    %eax,   pPtr
+    movl    %eax,   -12(%ebp)
     addl    $4, %esp
 
     movl    $0,     %eax
-    movl    pPtr,   %edx
+    movl    -12(%ebp),   %edx
     cmpl    %edx,   %eax
     je      label_mem_failed
 
@@ -71,7 +63,7 @@ label_for1_loop:
     addl    $8, %esp
 
     movl    -8(%ebp),   %eax            # i
-    movl    pPtr,       %ecx            # load malloc'd pointer
+    movl    -12(%ebp),       %ecx            # load malloc'd pointer
     leal    (%ecx,%eax,4),  %edx        # edx = &pPtr[i]
     pushl   %edx
     pushl   $msg_main_scan
@@ -96,7 +88,7 @@ label_for1_condition:
     jmp     label_for2_condition
 
 label_for2_loop:
-    movl    pPtr, %ecx                #Load the pointer returned by malloc
+    movl    -12(%ebp), %ecx                #Load the pointer returned by malloc
     movl    -8(%ebp), %edx            #Load loop counter (i)
     movl    (%ecx, %edx, 4), %eax     #Load pPtr[i] into eax
     pushl   %eax
@@ -115,7 +107,7 @@ label_for2_condition:
     jl      label_for2_loop
     #for 2 ends
 
-    movl    pPtr, %eax
+    movl    -12(%ebp), %eax
     pushl   %eax
     call    free
     addl    $4, %esp
