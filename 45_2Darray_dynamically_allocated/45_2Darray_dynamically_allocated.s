@@ -2,10 +2,13 @@
 
 .section    .rodata
     msg_main_enter_value_of_rowcol:
-    .string "Enter value of rows & columns(< %d)\t"
+    .string "Enter value of rows & columns\t"
 
     msg_main_scan_rowcolval:
     .string "%d%d"
+
+    msg_main_memfailed:
+    .string "Memory allocation failed"
 
     msg_main_enter_each_value:
     .string "Enter [%d][%d] value:\t"
@@ -27,12 +30,11 @@ main:
     movl    %esp,   %ebp
 
     subl    $16,    %esp
-    subl    $(4*MAX*MAX),   %esp
+    subl    $4,     %esp                #space for ppPtr
 
-    pushl   $MAX
     pushl   $msg_main_enter_value_of_rowcol
     call    printf
-    addl    $8, %esp
+    addl    $4, %esp
 
     leal    -4(%ebp),   %ecx
     leal    -8(%ebp),   %ebx
@@ -41,6 +43,18 @@ main:
     pushl   $msg_main_scan_rowcolval
     call    scanf
     addl    $12,    %esp
+
+    movl    -4(%ebp),   %eax
+    movl    $4, %ecx
+    mull    %ecx            #eax now has value iRows*4
+    pushl   %eax
+    call    malloc          #malloc will return adress in eax
+    addl    $4, %esp
+    movl    %eax,   -20(%ebp)   #address stored in ppPtr
+
+    movl    $0, %edx
+    cmpl    %eax,   %edx
+    je      label_memfailed
 
     #for11 starts
     movl    $0, -12(%ebp)
@@ -51,6 +65,20 @@ label_for11_condition:
     movl    -12(%ebp),  %edx
     cmpl    %eax    ,%edx
     jge     label_for11_exit
+
+    movl    -8(%ebp),   %eax
+    movl    $4, %ecx
+    mull    %ecx            #eax now has value iCol*4
+    pushl   %eax
+    call    malloc          #malloc will return adress in eax
+    addl    $4, %esp
+    movl    -20(%ebp),  %ebx
+    movl    -12(%ebp),  %ecx
+    movl    %eax,   (%ebx, %ecx, 4)   #address stored in ppPtr[iCounter1]
+
+    movl    $0, %edx
+    cmpl    %eax,   %edx
+    je      label_memfailed
 
         #for12 starts
         movl    $0, -16(%ebp)
@@ -68,14 +96,14 @@ label_for11_condition:
         call    printf
         addl    $12,    %esp
 
-        movl    -8(%ebp),   %eax
+        movl    -20(%ebp),  %ebx
         movl    -12(%ebp),  %ecx
-        mull    %ecx
-        addl    -16(%ebp),  %eax    #output of mull is in eax. we add it with counter2
+        movl    (%ebx, %ecx, 4),    %ebx
 
-        leal    -16 - 4*MAX*MAX(%ebp), %ecx    # Get base address of array into %ecx
-        leal    (%ecx,  %eax, 4),       %edx
-        pushl   %edx
+        movl    -16(%ebp),  %ecx
+        leal    (%ebx, %ecx, 4),    %ebx
+
+        pushl   %ebx
         pushl   $msg_main_scanf_each_value
         call    scanf
         addl    $8, %esp
@@ -91,10 +119,11 @@ label_increment_iCounter11:
 
 label_for11_exit:
 
-    pushl   $msg_main_entered_elements_are
-    call    printf
 #============================================================
 
+    pushl   $msg_main_entered_elements_are
+    call    printf
+    addl    $4, %esp
 
     #for21 starts
     movl    $0, -12(%ebp)
@@ -116,14 +145,14 @@ label_for21_condition:
         cmpl    %eax,   %edx
         jge     label_increment_iCounter21
 
-        movl    -8(%ebp),   %eax
+        movl    -20(%ebp),  %ebx
         movl    -12(%ebp),  %ecx
-        mull    %ecx
-        addl    -16(%ebp),  %eax    #output of mull is in eax. we add it with counter2
+        movl    (%ebx, %ecx, 4),    %ebx
 
-        leal    -16 - 4*MAX*MAX(%ebp), %ecx
-        movl    (%ecx,  %eax, 4),       %edx
-        pushl   %edx
+        movl    -16(%ebp),  %ecx
+        movl    (%ebx, %ecx, 4),    %ebx
+
+        pushl   %ebx
         pushl   -16(%ebp)
         pushl   -12(%ebp)
         pushl   $msg_main_print_each_value
@@ -139,6 +168,44 @@ label_increment_iCounter21:
     jmp     label_for21_condition
 
 #============================================================
+
+#free for starts
+    movl    $0, -12(%ebp)
+
+label_forFREE_condition:
+    movl    -4(%ebp),   %eax
+    movl    -12(%ebp),  %edx
+    cmpl    %eax    ,%edx
+    jge     label_forFREE_exit
+
+    movl    -20(%ebp),  %ebx
+    movl    -12(%ebp),  %ecx
+    movl    (%ebx, %ecx, 4),    %ebx
+    pushl   %ebx
+    call    free
+    addl    $4, %esp
+
+    movl    -20(%ebp),  %ebx
+    movl    -12(%ebp),  %ecx
+    movl    $0, (%ebx, %ecx, 4)
+
+    addl    $1, -12(%ebp)
+    jmp     label_forFREE_condition
+
+label_forFREE_exit:
+    pushl   -20(%ebp)
+    call    free
+    addl    $4, %esp
+
 label_for21_exit:
     pushl   $0
     call    exit
+
+label_memfailed:
+    pushl   $msg_main_memfailed
+    call    puts
+    addl    $4, %esp
+
+    pushl   $-1
+    call    exit
+    
