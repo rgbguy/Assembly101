@@ -1,0 +1,6 @@
+arr = 0x7ffd0145aa20            	 *arr = 10                        	 &arr = 0x7ffd0145aa20           
+p = 0x7ffd0145aa40            	 *p = 0x7ffd0145aa20            	 **p = 10                       
+prt = 0x7ffd0145aa40            	 *ptr = 0x7ffd0145aa20            	 **ptr = 10                       
+ptr - p = 1 	 *ptr - arr = 1 	 **ptr = 20
+ptr - p = 2 	 *ptr - arr = 2 	 **ptr = 30
+ptr - p = 2 	 *ptr - arr = 3 	 **ptr = 40
