@@ -11,9 +11,6 @@
     msg_main_printf4:
     .string "ptr - p = %d \t *ptr - arr = %d \t **ptr = %d\n"
 
-    msg_main_printfDEBUG:
-    .string "ptr - p =  \t *ptr - arr =  \t **ptr = %d\n"
-
 .section .text
 .globl  main
 .type   main,   @function
@@ -133,9 +130,7 @@ main:
     addl    $16,    %esp
 
     movl    -44(%ebp),  %eax        #moving value in ptr into eax, now eax has address of p
-    addl    $4, (%eax)
-    movl    %eax,   -44(%ebp)
-
+    addl    $4, (%eax)              #incrementing the dereferenced value and storing it back
 #printf("ptr - p = %d \t *ptr - arr = %d \t **ptr = %d\n", ptr - p, *ptr - arr, **ptr);
     movl    -44(%ebp),  %eax
     movl    (%eax),   %eax

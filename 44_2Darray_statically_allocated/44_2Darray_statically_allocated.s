@@ -42,86 +42,69 @@ main:
     call    scanf
     addl    $12,    %esp
 
-    #for11 starts
+#========================================================================
     movl    $0, -12(%ebp)
     jmp     label_for11_condition
 
-label_for11_condition:
-    movl    -4(%ebp),   %eax
-    movl    -12(%ebp),  %edx
-    cmpl    %eax    ,%edx
-    jge     label_for11_exit
+label_for11:
+    addl    $1, -12(%ebp)
 
-        #for12 starts
         movl    $0, -16(%ebp)
         jmp     label_for12_condition
 
-        label_for12_condition:
-        movl    -8(%ebp),   %eax
-        movl    -16(%ebp),  %edx
-        cmpl    %eax,   %edx
-        jge     label_increment_iCounter11
-
+    label_for12:
+        addl    $1, -16(%ebp)
         pushl   -16(%ebp)
         pushl   -12(%ebp)
         pushl   $msg_main_enter_each_value
         call    printf
         addl    $12,    %esp
 
-        movl    -8(%ebp),   %eax
-        movl    -12(%ebp),  %ecx
-        mull    %ecx
-        addl    -16(%ebp),  %eax    #output of mull is in eax. we add it with counter2
-
-        leal    -16 - 4*MAX*MAX(%ebp), %ecx    # Get base address of array into %ecx
+        movl    -8(%ebp),   %eax    #iColumns
+        movl    -12(%ebp),  %ecx    #iCounter1
+        mull    %ecx                #iCounter1*iRows = result stored in eax
+        addl    -16(%ebp),   %eax    #final index
+        leal    -(16+4*MAX*MAX)(%ebp), %ecx
         leal    (%ecx,  %eax, 4),       %edx
         pushl   %edx
         pushl   $msg_main_scanf_each_value
         call    scanf
         addl    $8, %esp
 
-        addl    $1, -16(%ebp)
+    label_for12_condition:
+        movl    -8(%ebp),   %eax    #iColumns
+        movl    -16(%ebp),  %edx    #iCounter2
+        cmpl    %eax,   %edx
+        jl      label_for12
 
-        jmp     label_for12_condition
-
-label_increment_iCounter11:
-    addl    $1, -12(%ebp)
-    jmp     label_for11_condition
-
-
-label_for11_exit:
-
+label_for11_condition:
+    movl    -4(%ebp),   %eax    #iRows
+    movl    -12(%ebp),  %edx    #iCounter1
+    cmpl    %eax,   %edx
+    jl      label_for11
+#========================================================================
     pushl   $msg_main_entered_elements_are
     call    printf
-#============================================================
+    addl    $4, %esp
+#========================================================================
 
-
-    #for21 starts
     movl    $0, -12(%ebp)
     jmp     label_for21_condition
 
-label_for21_condition:
-    movl    -4(%ebp),   %eax
-    movl    -12(%ebp),  %edx
-    cmpl    %eax    ,%edx
-    jge     label_for21_exit
+label_for21:
+    addl    $1, -12(%ebp)
 
-        #for22 starts
         movl    $0, -16(%ebp)
         jmp     label_for22_condition
 
-        label_for22_condition:
-        movl    -8(%ebp),   %eax
-        movl    -16(%ebp),  %edx
-        cmpl    %eax,   %edx
-        jge     label_increment_iCounter21
+    label_for22:
+        addl    $1, -16(%ebp)
 
-        movl    -8(%ebp),   %eax
-        movl    -12(%ebp),  %ecx
-        mull    %ecx
-        addl    -16(%ebp),  %eax    #output of mull is in eax. we add it with counter2
-
-        leal    -16 - 4*MAX*MAX(%ebp), %ecx
+        movl    -8(%ebp),   %eax    #iColumns
+        movl    -12(%ebp),  %ecx    #iCounter1
+        mull    %ecx                #iCounter1*iRows = result stored in eax
+        addl    -16(%ebp),   %eax    #final index
+        leal    -(16+4*MAX*MAX)(%ebp), %ecx
         movl    (%ecx,  %eax, 4),       %edx
         pushl   %edx
         pushl   -16(%ebp)
@@ -130,15 +113,18 @@ label_for21_condition:
         call    printf
         addl    $16, %esp
 
-        addl    $1, -16(%ebp)
+    label_for22_condition:
+        movl    -8(%ebp),   %eax    #iColumns
+        movl    -16(%ebp),  %edx    #iCounter2
+        cmpl    %eax,   %edx
+        jl      label_for22
 
-        jmp     label_for22_condition
+label_for21_condition:
+    movl    -4(%ebp),   %eax    #iRows
+    movl    -12(%ebp),  %edx    #iCounter1
+    cmpl    %eax,   %edx
+    jl      label_for21
+#========================================================================
 
-label_increment_iCounter21:
-    addl    $1, -12(%ebp)
-    jmp     label_for21_condition
-
-#============================================================
-label_for21_exit:
     pushl   $0
     call    exit
