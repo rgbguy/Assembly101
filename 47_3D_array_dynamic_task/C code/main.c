@@ -54,7 +54,7 @@ int main()
         {
             for(iCounter3 = 0; iCounter3 < iColumns; iCounter3++)
             {
-                printf("Enter [%d][%d][%d] value is:\t%d\n", iCounter1, iCounter2, iCounter3, pppPtr[iCounter1][iCounter2][iCounter3]);
+                printf("Entered [%d][%d][%d] value is:\t%d\n", iCounter1, iCounter2, iCounter3, pppPtr[iCounter1][iCounter2][iCounter3]);
             }
         }
     }

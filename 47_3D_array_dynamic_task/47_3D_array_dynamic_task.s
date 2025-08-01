@@ -18,7 +18,7 @@
     .string "Entered elements are:\n"
 
     msg_main_print_each_value:
-    .string "Enter [%d][%d][%d] value is:\t%d\n"
+    .string "[%d][%d][%d] value is:\t%d\n"
 
 .section    .text
 .globl  main
@@ -54,12 +54,6 @@ main:
     cmpl    %eax,   %edx                #NULLCHECK. eax already has malloc's output
     je      label_memfailed
 
-label_memfailed:
-    movl    $msg_main_print_memFailed,  (%esp)
-    call    puts
-    movl    $-1,    (%esp)
-    call    exit
-
 #for11
     movl    $0, -16(%ebp)               #iCounter1 = 0
     jmp     label_for_11condition
@@ -83,7 +77,7 @@ label_for_11:
 
     label_for_12:
         movl    $4, %eax                #sizeof(int)
-        movl    -12(%ebx),  %ecx        #iColumns
+        movl    -12(%ebp),  %ecx        #iColumns
         mull    %ecx                    #iColumns*sizeof(int) => answer in eax
         movl    %eax,   (%esp)          #malloc parameter
         call    malloc                  #malloc-ed address in eax
@@ -141,6 +135,120 @@ label_for_11condition:
     cmpl    %eax,   %edx                
     jl      label_for_11
 
+#==============================================================================
+    movl    $msg_main_print_enteredElementsAre, (%esp)
+    call    printf
+#==============================================================================
+#for21
+    movl    $0, -16(%ebp)               #iCounter1 = 0
+    jmp     label_for_21condition
+
+label_for_21:
+    #for22
+    movl    $0, -20(%ebp)               #iCounter2=0
+    jmp     label_for_22condition
+
+    label_for_22:
+        #for23
+        movl    $0, -24(%ebp)           #iCounter3=0
+        jmp     label_for_23condition
+
+        label_for_23:
+            movl    -28(%ebp),  %ebx        #base address of pppPtr
+            movl    -16(%ebp),  %eax        #iCounter1
+            movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1]'s base address
+            movl    -20(%ebp),  %eax        #iCounter2
+            movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1][iCounter2]'s base address
+            movl    -24(%ebp),  %eax        #iCounter3
+            movl    (%ebx, %eax, 4), %eax   #pppPtr[iCounter1][iCounter2][iCounter3]
+            movl    %eax,       16(%esp)
+            movl    -24(%ebp),  %eax
+            movl    %eax,       12(%esp)    #iCounter3
+            movl    -20(%ebp),  %eax
+            movl    %eax,       8(%esp)     #iCounter2
+            movl    -16(%ebp),  %eax
+            movl    %eax,       4(%esp)     #iCounter1
+            movl    $msg_main_print_each_value,    (%esp) #printString
+            call    printf
+
+            addl    $1, -24(%ebp)           #iCounter3++
+        label_for_23condition:
+            movl    -12(%ebp),  %eax    #iColumns
+            movl    -24(%ebp),  %edx    #iCounter3
+            cmpl    %eax,   %edx
+            jl      label_for_23
+
+        addl    $1, -20(%ebp)           #iCounter2++
+    label_for_22condition:
+        movl    -8(%ebp),   %eax        #iRows
+        movl    -20(%ebp),  %edx        #iCounter2
+        cmpl    %eax,   %edx
+        jl      label_for_22
+
+    addl    $1, -16(%ebp)               #iCounter1++
+label_for_21condition:
+    movl    -4(%ebp),   %eax            #iPlanes
+    movl    -16(%ebp),  %edx            #iCounter1
+    cmpl    %eax,   %edx                
+    jl      label_for_21
+#================================================================================
+#for31
+    movl    $0, -16(%ebp)               #iCounter1 = 0
+    jmp     label_for_31condition
+
+label_for_31:
+    #for32
+    movl    $0, -20(%ebp)               #iCounter2=0
+    jmp     label_for_32condition
+
+    label_for_32:
+        movl    -28(%ebp),  %ebx        #base address of pppPtr
+        movl    -16(%ebp),  %eax        #iCounter1
+        movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1]'s base address
+        movl    -20(%ebp),  %eax        #iCounter2
+        movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1][iCounter2]'s base address
+        movl    %ebx,   (%esp)          #free argument
+        call    free
+
+        #setting pppPtr[iCounter1][iCounter2] = NULL
+        movl    -28(%ebp),  %ebx        #base address of pppPtr
+        movl    -16(%ebp),  %eax        #iCounter1
+        movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1]'s base address
+        movl    -20(%ebp),  %eax        #iCounter2
+        movl    $0, (%ebx, %eax, 4)
+
+        addl    $1, -20(%ebp)           #iCounter2++
+    label_for_32condition:
+        movl    -8(%ebp),   %eax        #iRows
+        movl    -20(%ebp),  %edx        #iCounter2
+        cmpl    %eax,   %edx
+        jl      label_for_32
+
+    movl    -28(%ebp),  %ebx        #base address of pppPtr
+    movl    -16(%ebp),  %eax        #iCounter1
+    movl    (%ebx, %eax, 4), %ebx   #pppPtr[iCounter1]'s base address
+    movl    %ebx,   (%esp)          #free parameter
+    call    free
+
+    #pppPtr[iCounter1] = NULL;
+    movl    -28(%ebp),  %ebx        #base address of pppPtr
+    movl    -16(%ebp),  %eax        #iCounter1
+    movl    $0, (%ebx, %eax, 4)     #pppPtr[iCounter1]'s base address
+
+    addl    $1, -16(%ebp)               #iCounter1++
+label_for_31condition:
+    movl    -4(%ebp),   %eax            #iPlanes
+    movl    -16(%ebp),  %edx            #iCounter1
+    cmpl    %eax,   %edx                
+    jl      label_for_31
+
+
 
     pushl   $0
+    call    exit
+
+label_memfailed:
+    movl    $msg_main_print_memFailed,  (%esp)
+    call    puts
+    movl    $-1,    (%esp)
     call    exit
