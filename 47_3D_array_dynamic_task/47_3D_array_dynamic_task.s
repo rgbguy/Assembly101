@@ -50,8 +50,7 @@ main:
     movl    %eax,   (%esp)              #malloc arguments
     call    malloc                      #address of malloc-ed memory start stored in eax
     movl    %eax,   -28(%ebp)           #malloc-ed memory address stored in pppPtr
-    movl    $0, %edx
-    cmpl    %eax,   %edx                #NULLCHECK. eax already has malloc's output
+    cmpl    $0, %eax                   #NULLCHECK. eax already has malloc's output
     je      label_memfailed
 
 #for11
@@ -67,8 +66,7 @@ label_for_11:
     movl    -28(%ebp),  %ebx            #base address of pppPtr
     movl    -16(%ebp),  %edx            #iCounter1
     movl    %eax,   (%ebx, %edx, 4)     #moving malloced address into pppPtr[iCounter1]
-    movl    $0, %edx
-    cmpl    %eax,   %edx
+    cmpl    $0, %eax
     je      label_memfailed
 
     #for12
@@ -86,8 +84,7 @@ label_for_11:
         movl    (%ebx,  %ecx, 4), %ebx  #pppPtr[iCounter1]
         movl    -20(%ebp),  %ecx        #iCounter2
         movl    %eax, (%ebx,  %ecx, 4)  #malloced value stored in pppPtr[iCounter1][iCounter2]
-        movl    $0, %edx
-        cmpl    %eax,   %edx            #NULLCHECK
+        cmpl    $0, %eax              #NULLCHECK
         je      label_memfailed
 
         #for13
