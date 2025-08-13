@@ -69,24 +69,19 @@ label_do:
 
 label_outOfIf:
     movl   -16(%ebp),  %eax
-    movl   $1, %edx
-    cmpl    %edx,   %eax
+    cmpl    $1,   %eax
     je      label_case_1
 
-    movl   $2, %edx
-    cmpl    %edx,   %eax
+    cmpl    $2,   %eax
     je      label_case_2
 
-    movl   $3, %edx
-    cmpl    %edx,   %eax
+    cmpl    $3,   %eax
     je      label_case_3
 
-    movl   $4, %edx
-    cmpl    %edx,   %eax
+    cmpl    $4,   %eax
     je      label_case_4
 
-    movl   $5, %edx
-    cmpl    %edx,   %eax
+    cmpl    $5,   %eax
     je      label_out
 
     pushl   $msg_main_print_enterValidChoice
