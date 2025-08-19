@@ -1,6 +1,6 @@
 .section    .rodata
     msg_main_printf_EnterDestination:
-    .string "\n\nEnter Destination string:\t"
+    .string "\n\nUsing REP\nEnter Destination string:\t"
 
     msg_main_printf_EnterSource:
     .string "\n\nEnter Source string:\t"
@@ -58,6 +58,8 @@ MYstrcat:
     pushl   %ebp
     movl    %esp,   %ebp
 
+    subl    $4, %esp    #1 param space for MYstrlen
+
     #8(%ebp) has destination base address
     #12(%ebp) has source base address
 
@@ -76,18 +78,41 @@ MYstrcat:
     leal    (%ebx,  %ecx,  1),  %edi
     movl    12(%ebp),           %esi
 
-    movl    12(%ebp),    %ebx
-    movl    $0,         %ecx
-    jmp     label_while2_condition
+    movl    %esi,   (%esp)
+    call    Mystrlen
 
-    label_while2:
-        movsb
+    movl    %eax,   %ecx
 
-    label_while2_condition:
-        movb    (%ebx,  %ecx,  1), %al
-        cmpb    $0, %al
-        jne     label_while2
+    rep     movsb
 
     movl    %ebp,   %esp
     pop     %ebp
     ret
+
+.section    .text
+.globl  Mystrlen
+.type   Mystrlen,   @function
+Mystrlen:
+    pushl   %ebp
+    movl    %esp,   %ebp
+
+    subl    $4,     %esp        #space for length
+    movl    $0,  -4(%ebp)       #length = 0
+    movl    8(%ebp),    %ebx    #base ptr of string. (argument of Mystrlen)
+    movl    $0,     %ecx
+    jmp     label_while_strlen_condition
+
+label_while_strlen:
+    addl    $1,     %ecx        #str++
+    addl    $1,  -4(%ebp)       #length++
+label_while_strlen_condition:
+    movb    (%ebx,  %ecx, 1),   %al
+    cmpb    $0,     %al
+    jne     label_while_strlen
+
+    movl    -4(%ebp),   %eax 
+
+    movl    %ebp,   %esp
+    popl    %ebp
+    ret
+    
