@@ -40,7 +40,7 @@ main:
 	push	$msg_main_print2
 	call	printf
 	addl	$8,	%esp
-	push	$0
+	push	$1
 	call	exit
 
 .globl	addition
