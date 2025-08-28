@@ -11,8 +11,8 @@
     msg_main_print_ans3:
     .string "fAns3 = %f\t\n"
 
-    int_5:
-        .int 5
+    int_2:
+        .int 2
 
 .section    .data
 .globl  fNo1
@@ -54,15 +54,15 @@ main:
     call    printf
 
     flds    fNo2            #st0
-    fsubs   fNo1
+    fdivs   fNo1
     fstps   fAns1
 
     flds    fNo1            #st0
-    fsubs   fNo2
+    fdivs   fNo2
     fstps   fAns2
 
-    flds    fNo1            #st0
-    fild    int_5
+    fild    int_2
+    fdivs   fNo1
     fstps   fAns3
 
     flds    fAns1           #st0
@@ -74,7 +74,6 @@ main:
     fstpl   4(%esp)
     movl    $msg_main_print_ans2, (%esp)
     call    printf
-
 
     flds    fAns3           #st0
     fstpl   4(%esp)

@@ -110,7 +110,6 @@ main:
     addl    $4,     %esp
 
     leal    obj1,   %eax
-    xorl    %edx,   %edx
     movl    (%eax), %edx    
     movl    4(%eax), %ecx    
     movl    8(%eax), %ebx

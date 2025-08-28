@@ -82,17 +82,17 @@ Compare:
 
     fcomi
     
-    jb      label_below
-    ja      label_above
-    movl    $0,     %eax
+    jae     label_above_equal
+    movl    $-1, %eax
     jmp     label_compare_out
 
-    label_above:
+    label_above_equal:
+        je      label_equal
         movl    $1, %eax
         jmp     label_compare_out
 
-    label_below:
-        movl    $-1, %eax
+    label_equal:
+        movl    $0,     %eax
         jmp     label_compare_out
 
     label_compare_out:

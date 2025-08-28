@@ -154,6 +154,20 @@ label_for21_condition:
     cmpl    %edx,   %eax        #iCounter1 < iRows
     jl      label_for21
 
+label_for_3:
+    movl    -20(%ebp),  %ebx        #base address of ppPtr
+    movl    (%ebx, %eax, 4), %ebx   #ppPtr[iCounter1]
+    pushl   %ebx
+    call    free
+    movl    $0, -20(%ebp)
+    addl    $1, -12(%ebp)
+
+label_for_3_condition:
+    movl    -12(%ebp),  %eax    #iCounter1
+    movl    -4(%ebp),   %edx    #iRows
+    cmpl    %edx,   %eax        #iCounter1 < iRows
+    jl      label_for_3
+
     pushl   $0
     call    exit
     

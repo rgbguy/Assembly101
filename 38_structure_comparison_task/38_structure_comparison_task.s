@@ -59,7 +59,6 @@ main:
     xorl    %eax,       %eax
     movb    (%ebx),     %al
     movl    4(%ebx),    %edx
-    xorl    %ecx,       %ecx
     movl    8(%ebx),    %ecx
     pushl   %ecx
     pushl   %edx
@@ -75,7 +74,6 @@ main:
     xorl    %eax,       %eax
     movb    -12(%ebp),  %al
     movl    -8(%ebp),   %edx
-    xorl    %ecx,       %ecx
     movl    -4(%ebp),   %ecx
     pushl   %ecx
     pushl   %edx
@@ -91,7 +89,6 @@ main:
     xorl    %eax,       %eax
     movb    -24(%ebp),  %al
     movl    -20(%ebp),   %edx
-    xorl    %ecx,       %ecx
     movl    -16(%ebp),   %ecx
     pushl   %ecx
     pushl   %edx
@@ -105,9 +102,7 @@ main:
     addl    $4,     %esp
 
     leal    obj1,   %ebx
-    xorl    %eax,   %eax
     movb    (%ebx), %al
-    xorl    %edx,   %edx
     movb    -12(%ebp),  %dl
     cmpb    %al,    %dl
     jne     label_not_equal_1
@@ -130,9 +125,7 @@ label_second_comparison:
     addl    $4,     %esp
 
     leal    -12(%ebp),   %ebx
-    xorl    %eax,   %eax
     movb    (%ebx), %al
-    xorl    %edx,   %edx
     movb    -24(%ebp),  %dl
     cmpb    %al,    %dl
     jne     label_not_equal_2
@@ -142,7 +135,6 @@ label_second_comparison:
     cmpl    %eax,    %edx
     jne     label_not_equal_2
     movw    8(%ebx), %ax
-    xorl    %edx,   %edx
     movw    -16(%ebp),  %dx
     cmpw    %ax,    %dx
     jne     label_not_equal_2
