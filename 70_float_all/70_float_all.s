@@ -39,18 +39,28 @@ main:
 
     subl    $16,    %esp
 
-    fild    i_22
-    fdivs   f_43.65
+    fild    i_22                 
+    flds    f_43.65               
+    fdivp    %st(0), %st(1)
 
-    flds    f_3.1
-    fmuls   f_76.34
+    flds    f_76.34             
+    flds    f_3.1              
+    fmulp    %st(0), %st(1)
 
-    faddp
-    fstps   fAns
+    faddp   %st(0), %st(1)
 
+    fild    i_6                
+    flds    f_12.43              
+    fmulp    %st(0), %st(1)
 
+    flds    f_94.21             
+    flds    f_140.2          
+    fdivp    %st(0), %st(1)
 
-    flds    fAns          #st0
+    fsubrp   %st(0), %st(1)
+
+    fdivrp   %st(0), %st(1)
+
     fstpl   4(%esp)
     movl    $msg_main_printf,   (%esp)
     call    printf
